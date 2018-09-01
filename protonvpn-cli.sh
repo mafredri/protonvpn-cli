@@ -518,7 +518,7 @@ function openvpn_connect() {
   done
 
   echo "[!] Error connecting to VPN."
-  if [[ ! -z $(< "$connection_logs" | grep "AUTH_FAILED") ]]; then
+  if grep -q "AUTH_FAILED" "$connection_logs"; then
     echo "[!] Reason: Authentication failed. Please check your ProtonVPN OpenVPN credentials."
   fi
   openvpn_disconnect quiet dont_exit
@@ -650,7 +650,7 @@ function print_console_status() {
     server_tier=$(echo "$vpn_server_details" | cut -d '@' -f3)
     server_features=$(echo "$vpn_server_details" | cut -d '@' -f4)
     server_load=$(echo "$vpn_server_details" | cut -d '@' -f5)
-    selected_protocol=$(< "$(get_protonvpn_cli_home)/.connection_selected_protocol" | tr '[:lower:]' '[:upper:]')
+    selected_protocol=$(tr '[:lower:]' '[:upper:]' < "$(get_protonvpn_cli_home)/.connection_selected_protocol")
 
     echo "[ProtonVPN] [Server Name]: $server_name"
     echo "[ProtonVPN] [OpenVPN Protocol]: $selected_protocol"

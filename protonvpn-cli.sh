@@ -313,7 +313,7 @@ function manage_ipv6() {
 
 function modify_dns() {
   # Backup DNS entries.
-  if [[ ("$1" == "backup")]]; then
+  if [[ ("$1" == "backup") ]]; then
     if [[  ( $(detect_platform_type) == "MacOS" ) ]]; then
       networksetup listallnetworkservices | tail +2 | while read interface; do
         networksetup -getdnsservers "$interface" > "$(get_protonvpn_cli_home)/$interface.dns_backup"

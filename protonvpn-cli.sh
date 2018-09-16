@@ -426,7 +426,7 @@ function openvpn_disconnect() {
       sleep 0.50
       if [[ $(is_openvpn_currently_running) == false ]]; then
         modify_dns revert_to_backup # Reverting to original DNS entries
-        # killswitch disable # Disabling killswitch
+        killswitch disable # Disabling killswitch
         cp "$(get_protonvpn_cli_home)/.connection_config_id" "$(get_protonvpn_cli_home)/.previous_connection_config_id" 2> /dev/null
         cp "$(get_protonvpn_cli_home)/.connection_selected_protocol" "$(get_protonvpn_cli_home)/.previous_connection_selected_protocol" 2> /dev/null
         rm -f  "$(get_protonvpn_cli_home)/.connection_config_id" "$(get_protonvpn_cli_home)/.connection_selected_protocol" 2> /dev/null
@@ -460,7 +460,7 @@ function openvpn_connect() {
 
   modify_dns backup # Backing-up current DNS entries.
   manage_ipv6 disable # Disabling IPv6 on machine.
-  # killswitch backup_rules # Backing-up firewall rules.
+  killswitch backup_rules # Backing-up firewall rules.
 
   config_id=$1
   selected_protocol=$2
@@ -507,7 +507,7 @@ function openvpn_connect() {
         modify_dns to_protonvpn_dns # Use ProtonVPN DNS server.
       fi
 
-      # killswitch enable # Enable killswitch
+      killswitch enable # Enable killswitch
 
       echo "$config_id" > "$(get_protonvpn_cli_home)/.connection_config_id"
       echo "$selected_protocol" > "$(get_protonvpn_cli_home)/.connection_selected_protocol"
@@ -665,10 +665,10 @@ function print_console_status() {
 }
 
 function get_openvpn_config_info() {
-  vpn_ip=$(awk '$1 == "remote" {print $2}' "$(get_protonvpn_cli_home)/protonvpn_openvpn_config.conf")
-  vpn_port=$(awk '$1 == "remote" {print $3}' "$(get_protonvpn_cli_home)/protonvpn_openvpn_config.conf")
+  vpn_ip=$(awk '$1 == "remote" {print $2}' "$(get_protonvpn_cli_home)/protonvpn_openvpn_config.conf" | head -n 1)
+  vpn_port=$(awk '$1 == "remote" {print $3}' "$(get_protonvpn_cli_home)/protonvpn_openvpn_config.conf" | head -n 1)
   vpn_type=$(awk '$1 == "proto" {print $2}' "$(get_protonvpn_cli_home)/protonvpn_openvpn_config.conf")
-  vpn_device_name=$(grep -P "TUN/TAP device (.)+ opened" "$(get_protonvpn_cli_home)/connection_logs" | cut -d " " -f9)
+  vpn_device_name=$(grep -P "TUN/TAP device (.)+ opened" "$(get_protonvpn_cli_home)/connection_logs" | awk '{print $9}')
   echo "$vpn_ip@$vpn_port@$vpn_type@$vpn_device_name"
 }
 

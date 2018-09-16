@@ -530,10 +530,10 @@ function openvpn_connect() {
   } &
 
   OPENVPN_OPTS=(
-    --config "$openvpn_config" \
-    --auth-user-pass "$(get_protonvpn_cli_home)/protonvpn_openvpn_credentials" \
-    --auth-retry nointeract \
-    --verb 4 \
+    --config "$openvpn_config"
+    --auth-user-pass "$(get_protonvpn_cli_home)/protonvpn_openvpn_credentials"
+    --auth-retry nointeract
+    --verb 4
     --log "$connection_logs"
   )
   if [[ $PROTONVPN_CLI_DAEMON = true ]]; then
